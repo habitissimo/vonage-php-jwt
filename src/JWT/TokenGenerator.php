@@ -47,6 +47,12 @@ class TokenGenerator
      */
     protected $privateKey;
 
+    /**
+     * Subject to use in the JWT
+     * @var string
+     */
+    protected $subject;
+
     public function __construct(string $applicationId, string $privateKey)
     {
         $this->applicationId = $applicationId;
@@ -60,6 +66,33 @@ class TokenGenerator
     {
         $this->paths[$path] = (object) $options;
         return $this;
+    }
+
+    public static function factory(string $applicationId, string $privateKey, array $options = []) : TokenGenerator
+    {
+        $token = new self($applicationId, $privateKey);
+
+        if (array_key_exists('expiration_time', $options)) {
+            $token->setExpirationTime($options['expiration_time']);
+        }
+
+        if (array_key_exists('jti', $options)) {
+            $token->setJTI($options['jti']);
+        }
+
+        if (array_key_exists('paths', $options)) {
+            $token->setPaths($options['paths']);
+        }
+
+        if (array_key_exists('not_before', $options)) {
+            $token->setNotBefore($options['not_before']);
+        }
+
+        if (array_key_exists('subject', $options)) {
+            $token->setSubject($options['subject']);
+        }
+
+        return $token;
     }
 
     public function generate() : string
@@ -76,10 +109,17 @@ class TokenGenerator
         if (!empty($this->getPaths())) {
             $builder->set('acl', ['paths' => $this->getPaths()]);
         }
+
         try {
             $builder->canOnlyBeUsedAfter($this->getNotBefore());
         } catch (RuntimeException $e) {
             // This is fine, NBF isn't required
+        }
+
+        try {
+            $builder->set('subject', $this->getSubject());
+        } catch (RuntimeException $e) {
+            // This is fine, Subject isn't required
         }
 
         return (string) $builder->sign(new Sha256(), $this->privateKey)->getToken();
@@ -109,6 +149,15 @@ class TokenGenerator
     public function getPaths() : array
     {
         return $this->paths;
+    }
+
+    public function getSubject() : string
+    {
+        if (!isset($this->subject)) {
+            throw new RuntimeException('Subject has not been set');
+        }
+
+        return $this->subject;
     }
 
     public function setExpirationTime(int $seconds) : self
@@ -151,6 +200,12 @@ class TokenGenerator
             }
         }
 
+        return $this;
+    }
+
+    public function setSubject(string $subject) : self
+    {
+        $this->subject = $subject;
         return $this;
     }
 }
