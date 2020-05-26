@@ -137,6 +137,37 @@ class TokenGeneratorTest extends TestCase
     }
 
     /**
+     * User can set complex bulk path ACL information
+     */
+    public function testCanSetComplexACLInformation()
+    {
+        $paths = [
+            '/*/users/**',
+            '/*/conversations/**' => [
+                'methods' => ['GET']
+            ]
+        ];
+
+        $generator = new TokenGenerator(
+            'd70425f2-1599-4e4c-81c4-cffc66e49a12',
+            file_get_contents(__DIR__ . '/resources/private.key')
+        );
+        $generator->setPaths($paths);
+        $token = $generator->generate();
+
+        $parsedToken = (new Parser())->parse($token);
+        $this->assertTrue($parsedToken->hasClaim('acl'));
+        $acl = $parsedToken->getClaim('acl');
+
+        $this->assertCount(2, (array) $acl->paths);
+        $this->assertTrue($acl->paths->{$paths[0]} instanceof stdClass);
+
+        $convoPath = '/*/conversations/**';
+        $this->assertTrue($acl->paths->{$convoPath} instanceof stdClass);
+        $this->assertTrue(is_array($acl->paths->{$convoPath}->methods));
+    }
+
+    /**
      * User can add individual ACL paths
      */
     public function testCanAddACLPath()
