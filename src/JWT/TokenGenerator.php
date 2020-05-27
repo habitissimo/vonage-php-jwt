@@ -68,31 +68,31 @@ class TokenGenerator
         return $this;
     }
 
-    public static function factory(string $applicationId, string $privateKey, array $options = []) : TokenGenerator
+    public static function factory(string $applicationId, string $privateKey, array $options = []) : string
     {
-        $token = new self($applicationId, $privateKey);
+        $generator = new self($applicationId, $privateKey);
 
         if (array_key_exists('expiration_time', $options)) {
-            $token->setExpirationTime($options['expiration_time']);
+            $generator->setExpirationTime($options['expiration_time']);
         }
 
         if (array_key_exists('jti', $options)) {
-            $token->setJTI($options['jti']);
+            $generator->setJTI($options['jti']);
         }
 
         if (array_key_exists('paths', $options)) {
-            $token->setPaths($options['paths']);
+            $generator->setPaths($options['paths']);
         }
 
         if (array_key_exists('not_before', $options)) {
-            $token->setNotBefore($options['not_before']);
+            $generator->setNotBefore($options['not_before']);
         }
 
         if (array_key_exists('subject', $options)) {
-            $token->setSubject($options['subject']);
+            $generator->setSubject($options['subject']);
         }
 
-        return $token;
+        return $generator->generate();
     }
 
     public function generate() : string

@@ -218,12 +218,10 @@ class TokenGeneratorTest extends TestCase
 
     public function testFactoryGeneratesValidToken()
     {
-        $generator = TokenGenerator::factory(
+        $token = TokenGenerator::factory(
             'd70425f2-1599-4e4c-81c4-cffc66e49a12',
             file_get_contents(__DIR__ . '/resources/private.key')
         );
-
-        $token = $generator->generate();
 
         $parsedToken = (new Parser())->parse($token);
         $this->assertSame('RS256', $parsedToken->getHeader('alg'));
@@ -246,7 +244,7 @@ class TokenGeneratorTest extends TestCase
         ];
         $nbf = strtotime('2025-01-01 00:00:00');
 
-        $generator = TokenGenerator::factory(
+        $token = TokenGenerator::factory(
             'd70425f2-1599-4e4c-81c4-cffc66e49a12',
             file_get_contents(__DIR__ . '/resources/private.key'),
             [
@@ -257,8 +255,6 @@ class TokenGeneratorTest extends TestCase
                 'subject' => 'foo'
             ]
         );
-
-        $token = $generator->generate();
 
         $parsedToken = (new Parser())->parse($token);
         $this->assertSame('RS256', $parsedToken->getHeader('alg'));
