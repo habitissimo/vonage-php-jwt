@@ -1,4 +1,4 @@
-Client Library for PHP 
+JWT Client Library for PHP 
 ============================
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
 [![Build Status](https://api.travis-ci.org/Nexmo/nexmo-jwt-php.svg?branch=master)](https://travis-ci.org/Nexmo/nexmo-jwt-php)
@@ -102,4 +102,3 @@ This library is actively developed and we love to hear from you! Please feel fre
 [license]: LICENSE.txt
 [issues]: https://github.com/Nexmo/nexmo-jwt-php/issues
 [pulls]: https://github.com/Nexmo/nexmo-jwt-php/pulls
-
