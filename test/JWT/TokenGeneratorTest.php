@@ -47,13 +47,13 @@ class TokenGeneratorTest extends TestCase
     /**
      * User should be able to override the expiration time
      */
-    public function testCanChangeExpirationTime()
+    public function testCanChangeTTL()
     {
         $generator = new TokenGenerator(
             'd70425f2-1599-4e4c-81c4-cffc66e49a12',
             file_get_contents(__DIR__ . '/resources/private.key')
         );
-        $generator->setExpirationTime(50);
+        $generator->setTTL(50);
         $token = $generator->generate();
 
         $parsedToken = (new Parser())->parse($token);
@@ -248,7 +248,7 @@ class TokenGeneratorTest extends TestCase
             'd70425f2-1599-4e4c-81c4-cffc66e49a12',
             file_get_contents(__DIR__ . '/resources/private.key'),
             [
-                'expiration_time' => 50,
+                'ttl' => 50,
                 'jti' => $uuid,
                 'paths' => $paths,
                 'not_before' => $nbf,

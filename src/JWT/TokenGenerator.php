@@ -21,7 +21,7 @@ class TokenGenerator
      * Number of seconds to expire in, defaults to 15 minutes
      * @var int
      */
-    protected $expirationTime = 900;
+    protected $ttl = 900;
 
     /**
      * UUIDv4 ID for the JWT
@@ -72,8 +72,8 @@ class TokenGenerator
     {
         $generator = new self($applicationId, $privateKey);
 
-        if (array_key_exists('expiration_time', $options)) {
-            $generator->setExpirationTime($options['expiration_time']);
+        if (array_key_exists('ttl', $options)) {
+            $generator->setTTL($options['ttl']);
         }
 
         if (array_key_exists('jti', $options)) {
@@ -97,8 +97,8 @@ class TokenGenerator
 
     public function generate() : string
     {
-        $exp = time() + $this->expirationTime;
         $iat = time();
+        $exp = $iat + $this->ttl;
 
         $builder = new Builder();
         $builder->setIssuedAt($iat)
@@ -160,9 +160,9 @@ class TokenGenerator
         return $this->subject;
     }
 
-    public function setExpirationTime(int $seconds) : self
+    public function setTTL(int $seconds) : self
     {
-        $this->expirationTime = $seconds;
+        $this->ttl = $seconds;
         return $this;
     }
 
@@ -207,5 +207,10 @@ class TokenGenerator
     {
         $this->subject = $subject;
         return $this;
+    }
+
+    public function getTTL() : int
+    {
+        return $this->ttl;
     }
 }

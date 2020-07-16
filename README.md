@@ -62,14 +62,14 @@ This will return a string token that can be used for Bearer Authentication to Ne
 Examples
 --------
 
-### Generating a token with a specific expiration time
+### Generating a token with a specific Time To Live
 
-By default, Nexmo JWT tokens are generated with a 15 minute expiration. In cases where the token lifetime should be different,
-you can override this setting by calling the `setExpirationTime()` on the Token Generator and passing the length of the expiration,
-in seconds.
+By default, Nexmo JWT tokens are generated with an Time To Live, or TTL, of 15 minutes after generation. In cases where the token lifetime 
+should be different, you can override this setting by calling the `setTTL()` method on the Token Generator and passing the length of seconds
+that the token should be valid for
 
 ```php
-$generator->setExpirationTime(30 * 60); // Set expiration to 30 minutes after token creation
+$generator->setTTL(30 * 60); // Set expiration to 30 minutes after token creation
 ```
 
 ### Setting ACLs
