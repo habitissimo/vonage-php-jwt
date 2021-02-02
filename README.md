@@ -1,7 +1,7 @@
 JWT Client Library for PHP 
 ============================
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
-[![Build Status](https://api.travis-ci.org/Nexmo/nexmo-jwt-php.svg?branch=master)](https://travis-ci.org/Nexmo/nexmo-jwt-php)
+[![Build Status](https://api.travis-ci.org/Nexmo/nexmo-jwt-php.svg?branch=main)](https://travis-ci.org/Nexmo/nexmo-jwt-php)
 [![Latest Stable Version](https://poser.pugx.org/nexmo/jwt/v/stable)](https://packagist.org/packages/nexmo/jwt)
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE.txt)
 [![codecov](https://codecov.io/gh/Nexmo/nexmo-jwt/branch/master/graph/badge.svg)](https://codecov.io/gh/Nexmo/nexmo-jwt)
