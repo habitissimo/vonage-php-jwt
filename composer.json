@@ -30,5 +30,10 @@
             "Vonage\\": "test/",
             "VonageTest\\": "test/"
         }
+    },
+    "scripts": {
+        "cs-check": "phpcs",
+        "cs-fix": "phpcbf",
+        "test": "phpunit"
     }
 }
