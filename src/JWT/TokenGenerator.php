@@ -1,13 +1,15 @@
 <?php
 declare(strict_types=1);
 
-namespace Nexmo\JWT;
+namespace Vonage\JWT;
 
-use Lcobucci\JWT\Builder;
-use Lcobucci\JWT\Signer\Rsa\Sha256;
-use Nexmo\JWT\Exception\InvalidJTIException;
 use Ramsey\Uuid\Uuid;
 use RuntimeException;
+use Lcobucci\JWT\Configuration;
+use Lcobucci\JWT\Parser;
+use Lcobucci\JWT\Signer\Rsa\Sha256;
+use Lcobucci\JWT\Signer\Key\InMemory;
+use Vonage\JWT\Exception\InvalidJTIException;
 
 class TokenGenerator
 {
@@ -16,6 +18,12 @@ class TokenGenerator
      * @var string
      */
     protected $applicationId;
+
+    /**
+     * Configuration of the token we are using
+     * @var Configuration
+     */
+    protected $config;
 
     /**
      * Number of seconds to expire in, defaults to 15 minutes
@@ -31,7 +39,7 @@ class TokenGenerator
 
     /**
      * Unix Timestamp at which this token becomes valid
-     * @var int
+     * @var \DateTimeImmutable
      */
     protected $nbf;
 
@@ -43,7 +51,7 @@ class TokenGenerator
 
     /**
      * Private key text used for signing
-     * @var string
+     * @var InMemory
      */
     protected $privateKey;
 
@@ -56,7 +64,9 @@ class TokenGenerator
     public function __construct(string $applicationId, string $privateKey)
     {
         $this->applicationId = $applicationId;
-        $this->privateKey = $privateKey;
+        $this->privateKey = InMemory::plainText($privateKey);
+
+        $this->config = Configuration::forSymmetricSigner(new Sha256(), $this->privateKey);
     }
 
     /**
@@ -68,6 +78,17 @@ class TokenGenerator
         return $this;
     }
 
+    /**
+     * Factory to create a token in one call
+     * $options format:
+     *  - ttl: string
+     *  - jti: string
+     *  - paths: array<string, \stdClass>
+     *  - not_before: int|\DateTimeImmutable
+     *  - subjet: string
+     *
+     * @param array<string, mixed> $options
+     */
     public static function factory(string $applicationId, string $privateKey, array $options = []) : string
     {
         $generator = new self($applicationId, $privateKey);
@@ -85,6 +106,9 @@ class TokenGenerator
         }
 
         if (array_key_exists('not_before', $options)) {
+            if (is_int($options['not_before'])) {
+                $options['not_before'] = (new \DateTimeImmutable())->setTimestamp($options['not_before']);
+            }
             $generator->setNotBefore($options['not_before']);
         }
 
@@ -100,14 +124,14 @@ class TokenGenerator
         $iat = time();
         $exp = $iat + $this->ttl;
 
-        $builder = new Builder();
-        $builder->setIssuedAt($iat)
-            ->setExpiration($exp)
+        $builder = $this->config->builder();
+        $builder->issuedAt((new \DateTimeImmutable())->setTimestamp($iat))
+            ->expiresAt((new \DateTimeImmutable())->setTimestamp($exp))
             ->identifiedBy($this->getJTI())
-            ->set('application_id', $this->applicationId);
+            ->withClaim('application_id', $this->applicationId);
 
         if (!empty($this->getPaths())) {
-            $builder->set('acl', ['paths' => $this->getPaths()]);
+            $builder->withClaim('acl', ['paths' => $this->getPaths()]);
         }
 
         try {
@@ -117,12 +141,12 @@ class TokenGenerator
         }
 
         try {
-            $builder->set('subject', $this->getSubject());
+            $builder->withClaim('subject', $this->getSubject());
         } catch (RuntimeException $e) {
             // This is fine, Subject isn't required
         }
 
-        return (string) $builder->sign(new Sha256(), $this->privateKey)->getToken();
+        return $builder->getToken($this->config->signer(), $this->config->signingKey())->toString();
     }
 
     public function getJTI() : string
@@ -134,13 +158,18 @@ class TokenGenerator
         return $this->jti;
     }
 
-    public function getNotBefore() : int
+    public function getNotBefore() : \DateTimeImmutable
     {
         if (!isset($this->nbf)) {
             throw new RuntimeException('Not Before time has not been set');
         }
 
         return $this->nbf;
+    }
+
+    public function getParser(): Parser
+    {
+        return $this->config->parser();
     }
 
     /**
@@ -176,7 +205,7 @@ class TokenGenerator
         return $this;
     }
 
-    public function setNotBefore(int $timestamp) : self
+    public function setNotBefore(\DateTimeImmutable $timestamp) : self
     {
         $this->nbf = $timestamp;
         return $this;
