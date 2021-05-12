@@ -12,7 +12,7 @@
         "phpstan/phpstan": "^0.12",
         "squizlabs/php_codesniffer": "^3.5"
     },
-    "license": "Apache 2.0",
+    "license": "Apache-2.0",
     "authors": [
         {
             "name": "Chris Tankersley",
