@@ -20,6 +20,12 @@ class TokenGenerator
     protected $applicationId;
 
     /**
+     * Set of generic claims to add to a JWT
+     * @var array
+     */
+    protected $claims = [];
+
+    /**
      * Configuration of the token we are using
      * @var Configuration
      */
@@ -95,14 +101,17 @@ class TokenGenerator
 
         if (array_key_exists('ttl', $options)) {
             $generator->setTTL($options['ttl']);
+            unset($options['ttl']);
         }
 
         if (array_key_exists('jti', $options)) {
             $generator->setJTI($options['jti']);
+            unset($options['jti']);
         }
 
         if (array_key_exists('paths', $options)) {
             $generator->setPaths($options['paths']);
+            unset($options['paths']);
         }
 
         if (array_key_exists('not_before', $options)) {
@@ -110,10 +119,16 @@ class TokenGenerator
                 $options['not_before'] = (new \DateTimeImmutable())->setTimestamp($options['not_before']);
             }
             $generator->setNotBefore($options['not_before']);
+            unset($options['not_before']);
         }
 
         if (array_key_exists('subject', $options)) {
             $generator->setSubject($options['subject']);
+            unset($options['subject']);
+        }
+
+        foreach ($options as $key => $value) {
+            $generator->addClaim($key, $value);
         }
 
         return $generator->generate();
@@ -144,6 +159,10 @@ class TokenGenerator
             $builder->withClaim('subject', $this->getSubject());
         } catch (RuntimeException $e) {
             // This is fine, Subject isn't required
+        }
+
+        foreach ($this->claims as $key => $value) {
+            $builder->withClaim($key, $value);
         }
 
         return $builder->getToken($this->config->signer(), $this->config->signingKey())->toString();
@@ -187,6 +206,12 @@ class TokenGenerator
         }
 
         return $this->subject;
+    }
+
+    public function addClaim($claim, $value): self
+    {
+        $this->claims[$claim] = $value;
+        return $this;
     }
 
     public function setTTL(int $seconds) : self

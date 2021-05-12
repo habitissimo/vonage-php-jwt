@@ -308,4 +308,38 @@ class TokenGeneratorTest extends TestCase
         $this->assertTrue($parsedToken->claims()->has('subject'));
         $this->assertSame('foo', $parsedToken->claims()->get('subject'));
     }
+
+    public function testCanAddGenericClaims()
+    {
+        $generator = new TokenGenerator(
+            'd70425f2-1599-4e4c-81c4-cffc66e49a12',
+            file_get_contents(__DIR__ . '/resources/private.key')
+        );
+        $generator->addClaim('foo', 'bar');
+        $token = $generator->generate();
+
+        $parsedToken = $generator->getParser()->parse($token);
+        $this->assertTrue($parsedToken->claims()->has('foo'));
+        $this->assertSame('bar', $parsedToken->claims()->get('foo'));
+    }
+
+    public function testCanAddGenericClaimsThroughFactory()
+    {
+        $generator = new TokenGenerator(
+            'd70425f2-1599-4e4c-81c4-cffc66e49a12',
+            file_get_contents(__DIR__ . '/resources/private.key')
+        );
+
+        $token = TokenGenerator::factory(
+            'd70425f2-1599-4e4c-81c4-cffc66e49a12',
+            file_get_contents(__DIR__ . '/resources/private.key'),
+            [
+                'foo' => 'bar'
+            ]
+        );
+
+        $parsedToken = $generator->getParser()->parse($token);
+        $this->assertTrue($parsedToken->claims()->has('foo'));
+        $this->assertSame('bar', $parsedToken->claims()->get('foo'));
+    }
 }
