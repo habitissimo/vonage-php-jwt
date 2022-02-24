@@ -42,7 +42,7 @@ class TokenGeneratorTest extends TestCase
         $this->assertTrue(Uuid::isValid($parsedToken->claims()->get('jti')));
         $this->assertFalse($parsedToken->headers()->has('acl'));
         $this->assertFalse($parsedToken->headers()->has('nbf'));
-        $this->assertFalse($parsedToken->claims()->has('subject'));
+        $this->assertFalse($parsedToken->claims()->has('sub'));
     }
 
     /**
@@ -266,7 +266,7 @@ class TokenGeneratorTest extends TestCase
                 'jti' => $uuid,
                 'paths' => $paths,
                 'not_before' => $nbf,
-                'subject' => 'foo'
+                'sub' => 'foo'
             ]
         );
         $generator = new TokenGenerator(
@@ -305,8 +305,9 @@ class TokenGeneratorTest extends TestCase
         $token = $generator->generate();
 
         $parsedToken = $generator->getParser()->parse($token);
-        $this->assertTrue($parsedToken->claims()->has('subject'));
-        $this->assertSame('foo', $parsedToken->claims()->get('subject'));
+
+        $this->assertTrue($parsedToken->claims()->has('sub'));
+        $this->assertSame('foo', $parsedToken->claims()->get('sub'));
     }
 
     public function testCanAddGenericClaims()
