@@ -15,6 +15,11 @@
     "license": "Apache-2.0",
     "authors": [
         {
+            "name": "James Seconde",
+            "email": "jim.seconde@vonage.com",
+            "role": "PHP Developer Advocate"
+        },
+        {
             "name": "Chris Tankersley",
             "email": "chris@ctankersley.com",
             "role": "Developer"
