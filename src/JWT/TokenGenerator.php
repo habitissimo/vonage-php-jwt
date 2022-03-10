@@ -91,7 +91,7 @@ class TokenGenerator
      *  - jti: string
      *  - paths: array<string, \stdClass>
      *  - not_before: int|\DateTimeImmutable
-     *  - subjet: string
+     *  - sub: string
      *
      * @param array<string, mixed> $options
      */
@@ -122,9 +122,9 @@ class TokenGenerator
             unset($options['not_before']);
         }
 
-        if (array_key_exists('subject', $options)) {
-            $generator->setSubject($options['subject']);
-            unset($options['subject']);
+        if (array_key_exists('sub', $options)) {
+            $generator->setSubject($options['sub']);
+            unset($options['sub']);
         }
 
         foreach ($options as $key => $value) {
@@ -156,7 +156,7 @@ class TokenGenerator
         }
 
         try {
-            $builder->withClaim('subject', $this->getSubject());
+            $builder->relatedTo($this->getSubject());
         } catch (RuntimeException $e) {
             // This is fine, Subject isn't required
         }
