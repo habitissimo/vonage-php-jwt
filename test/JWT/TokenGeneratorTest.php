@@ -343,4 +343,18 @@ class TokenGeneratorTest extends TestCase
         $this->assertTrue($parsedToken->claims()->has('foo'));
         $this->assertSame('bar', $parsedToken->claims()->get('foo'));
     }
+
+    public function testCanValidateJWTWithSignatureSecret()
+    {
+        $token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1ODc0OTQ5NjIsImp0aSI6ImM1YmE4ZjI0LTFhMTQtNGMxMC1iZmRmLTNmYmU4Y2U1MTFiNSIsImlzcyI6IlZvbmFnZSIsInBheWxvYWRfaGFzaCI6ImQ2YzBlNzRiNTg1N2RmMjBlM2I3ZTUxYjMwYzBjMmE0MGVjNzNhNzc4NzliNmYwNzRkZGM3YTIzMTdkZDAzMWIiLCJhcGlfa2V5IjoiYTFiMmMzZCIsImFwcGxpY2F0aW9uX2lkIjoiYWFhYWFhYWEtYmJiYi1jY2NjLWRkZGQtMDEyMzQ1Njc4OWFiIn0.JQRKi1d0SQitmjPINfTWMpt3XZkGsLbD7EjCdXoNSbk';
+        $secret = 'ZYtdTtGV3BCFN7tWmOWr1md66XsquMggr4W2cTtXtcPgfnI0Xw';
+        $this->assertTrue(TokenGenerator::verifySignature($token, $secret));
+    }
+
+    public function testWillNotValidateJWTWithBadSecret()
+    {
+        $token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1ODc0OTQ5NjIsImp0aSI6ImM1YmE4ZjI0LTFhMTQtNGMxMC1iZmRmLTNmYmU4Y2U1MTFiNSIsImlzcyI6IlZvbmFnZSIsInBheWxvYWRfaGFzaCI6ImQ2YzBlNzRiNTg1N2RmMjBlM2I3ZTUxYjMwYzBjMmE0MGVjNzNhNzc4NzliNmYwNzRkZGM3YTIzMTdkZDAzMWIiLCJhcGlfa2V5IjoiYTFiMmMzZCIsImFwcGxpY2F0aW9uX2lkIjoiYWFhYWFhYWEtYmJiYi1jY2NjLWRkZGQtMDEyMzQ1Njc4OWFiIn0.JQRKi1d0SQitmjPINfTWMpt3XZkGsLbD7EjCdXoNSbk';
+        $secret = 'ZYtdTtGV3BCFN7tWmOWr1md66XsquMggr4W2cTtXtcPgf55555';
+        $this->assertFalse(TokenGenerator::verifySignature($token, $secret));
+    }
 }
