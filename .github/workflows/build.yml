@@ -44,5 +44,8 @@ jobs:
       - name: Analyze & test
         run: composer test -- -v --coverage-clover=coverage.xml
 
+      - name: Run PhpStan
+        run: composer run phpstan
+
       - name: Run codecov
         uses: codecov/codecov-action@v1
