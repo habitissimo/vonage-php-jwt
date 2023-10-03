@@ -1,17 +1,17 @@
 JWT Client Library for PHP 
 ============================
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
-[![Build Status](https://api.travis-ci.org/Vonage/vonage-php-jwt.svg?branch=main)](https://travis-ci.org/Vonage/nexmo-jwt-php)
-[![Latest Stable Version](https://poser.pugx.org/vonage/jwt/v/stable)](https://packagist.org/packages/nexmo/jwt)
-[![MIT licensed](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](./LICENSE.txt)
-[![codecov](https://codecov.io/gh/Vonage/vonage-php-jwt/branch/0.x/graph/badge.svg)](https://codecov.io/gh/Vonage/nexmo-jwt)
+[![Build Status](https://github.com/vonage/vonage-php-jwt/workflows/build/badge.svg)](https://github.com/Vonage/vonage-php-jwt/actions?query=workflow%3Abuild)
+[![Latest Stable Version](https://poser.pugx.org/vonage/jwt/v/stable)](https://packagist.org/packages/vonage/jwt)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![codecov](https://codecov.io/gh/Vonage/vonage-php-jwt/graph/badge.svg?token=6WIMGZSOUL)](https://codecov.io/gh/Vonage/vonage-php-jwt)
 
-<img src="https://developer.nexmo.com/assets/images/Vonage_Nexmo.svg" height="48px" alt="Vonage is now known as Vonage" />
+<img src="vonage_logo.png" alt="Vonage logo" />
 
-*This library requires a minimum PHP version of 7.2*
+*This library requires a minimum PHP version of 8.0*
 
-This is the PHP library for generating JWTS to use Vonage's API. To use this, you'll need a Vonage account. Sign up [for free at 
-vonage.com/dashboard][signup].
+This is the PHP library for generating JWTs to use Vonage's API. To use this, you'll need a Vonage account. 
+Sign up [for free at vonage.com/dashboard][signup].
 
  * [Installation](#installation)
  * [Usage](#usage)

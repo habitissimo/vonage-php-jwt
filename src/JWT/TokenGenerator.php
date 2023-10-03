@@ -9,63 +9,57 @@ use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Parser;
 use Lcobucci\JWT\Signer\Rsa\Sha256;
 use Lcobucci\JWT\Signer\Key\InMemory;
+use stdClass;
 use Vonage\JWT\Exception\InvalidJTIException;
 
 class TokenGenerator
 {
     /**
      * UUID of the application we are generating a UUID for
-     * @var string
      */
-    protected $applicationId;
+    protected string $applicationId;
 
     /**
      * Set of generic claims to add to a JWT
-     * @var array
+     * @var array<mixed>
      */
-    protected $claims = [];
+    protected array $claims = [];
 
     /**
      * Configuration of the token we are using
-     * @var Configuration
      */
-    protected $config;
+    protected Configuration $config;
 
     /**
      * Number of seconds to expire in, defaults to 15 minutes
-     * @var int
      */
-    protected $ttl = 900;
+    protected int $ttl = 900;
 
     /**
      * UUIDv4 ID for the JWT
-     * @var string
      */
-    protected $jti;
+    protected string $jti;
 
     /**
      * Unix Timestamp at which this token becomes valid
-     * @var \DateTimeImmutable
      */
-    protected $nbf;
+    protected \DateTimeImmutable $nbf;
 
     /**
      * ACL Path information
-     * @var array<string, \stdClass>
+     * @var array<string, stdClass>
      */
-    protected $paths = [];
+    protected array $paths = [];
 
     /**
      * Private key text used for signing
-     * @var InMemory
      */
-    protected $privateKey;
+    protected InMemory $privateKey;
 
     /**
      * Subject to use in the JWT
-     * @var string
      */
-    protected $subject;
+    protected string $subject;
 
     public function __construct(string $applicationId, string $privateKey)
     {
@@ -76,7 +70,7 @@ class TokenGenerator
     }
 
     /**
-     * @param array<string, array> $options
+     * @param array<string, array<string, string>> $options
      */
     public function addPath(string $path, array $options = []) : self
     {
@@ -192,7 +186,7 @@ class TokenGenerator
     }
 
     /**
-     * @return array<string, \stdClass>
+     * @return array<string, stdClass>
      */
     public function getPaths() : array
     {
@@ -208,7 +202,7 @@ class TokenGenerator
         return $this->subject;
     }
 
-    public function addClaim($claim, $value): self
+    public function addClaim(string $claim, mixed $value): self
     {
         $this->claims[$claim] = $value;
         return $this;
@@ -241,7 +235,7 @@ class TokenGenerator
      * WARNING: This will reset the paths to the new list, overriding any
      * existing paths.
      *
-     * @param array<string|int, array|string> $pathData
+     * @param array<string|int, array<string, mixed>|string> $pathData
      */
     public function setPaths(array $pathData) : self
     {
