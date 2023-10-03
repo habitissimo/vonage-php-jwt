@@ -6,10 +6,15 @@ namespace Vonage\JWT;
 use Ramsey\Uuid\Uuid;
 use RuntimeException;
 use Lcobucci\JWT\Configuration;
+use Lcobucci\JWT\Encoding\JoseEncoder;
 use Lcobucci\JWT\Parser;
 use Lcobucci\JWT\Signer\Rsa\Sha256;
+use Lcobucci\JWT\Signer\Hmac\Sha256 as Sha256HMAC;
 use Lcobucci\JWT\Signer\Key\InMemory;
 use stdClass;
+use Lcobucci\JWT\Token\Parser as TokenParser;
+use Lcobucci\JWT\Validation\Constraint\SignedWith;
+use Lcobucci\JWT\Validation\Validator;
 use Vonage\JWT\Exception\InvalidJTIException;
 
 class TokenGenerator
@@ -260,5 +265,19 @@ class TokenGenerator
     public function getTTL() : int
     {
         return $this->ttl;
+    }
+
+    public static function verifySignature(string $token, string $secret): bool
+    {
+        $parser = new TokenParser(new JoseEncoder());
+        $validator = new Validator();
+
+        $token = $parser->parse($token);
+
+        return $validator->validate(
+            $token, new SignedWith(
+                new Sha256HMAC(),
+                InMemory::plainText($secret)
+            ));
     }
 }
