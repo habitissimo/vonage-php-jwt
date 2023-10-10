@@ -138,30 +138,30 @@ class TokenGenerator
         $iat = time();
         $exp = $iat + $this->ttl;
 
-        $builder = $this->config->builder();
-        $builder->issuedAt((new \DateTimeImmutable())->setTimestamp($iat))
+        $builder = $this->config->builder()
+            ->issuedAt((new \DateTimeImmutable())->setTimestamp($iat))
             ->expiresAt((new \DateTimeImmutable())->setTimestamp($exp))
             ->identifiedBy($this->getJTI())
             ->withClaim('application_id', $this->applicationId);
 
         if (!empty($this->getPaths())) {
-            $builder->withClaim('acl', ['paths' => $this->getPaths()]);
+            $builder = $builder->withClaim('acl', ['paths' => $this->getPaths()]);
         }
 
         try {
-            $builder->canOnlyBeUsedAfter($this->getNotBefore());
+            $builder = $builder->canOnlyBeUsedAfter($this->getNotBefore());
         } catch (RuntimeException $e) {
             // This is fine, NBF isn't required
         }
 
         try {
-            $builder->relatedTo($this->getSubject());
+            $builder = $builder->relatedTo($this->getSubject());
         } catch (RuntimeException $e) {
             // This is fine, Subject isn't required
         }
 
         foreach ($this->claims as $key => $value) {
-            $builder->withClaim($key, $value);
+            $builder = $builder->withClaim($key, $value);
         }
 
         return $builder->getToken($this->config->signer(), $this->config->signingKey())->toString();
