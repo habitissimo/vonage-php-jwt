@@ -1,9 +1,9 @@
 {
-    "name": "vonage/jwt",
+    "name": "habitissimo/vonage-jwt",
     "description": "A standalone package for creating JWTs for Vonage APIs",
     "type": "library",
     "require": {
-        "php": "~8.1 || ~8.2 || ~8.3",
+        "php": ">=7.4.24 || ~8.1 || ~8.2 || ~8.3",
         "lcobucci/jwt": "^4.3.0|^5.0",
         "ramsey/uuid": "^4.7.5"
     },
